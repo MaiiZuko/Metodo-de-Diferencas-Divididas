@@ -8,4 +8,8 @@
 
 3. **Instale o Tkinter (caso necessário para a interface gráfica):**
 
+### Comandos
+pip install numpy
+pip install matplotlib
+Caso necessário rodar - pip install tkinter
 Para rodar o programa utilize python .\programa.py
