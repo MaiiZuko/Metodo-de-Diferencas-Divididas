@@ -44,6 +44,10 @@ def calcular_interpolacao():
         x_interpolate = np.linspace(min(x_vals), max(x_vals), 100)
         y_interpolate = [newton_interpolation(x_vals, y_vals, xi) for xi in x_interpolate]
         
+        # ajusta uma reta aos pontos usando numpy
+        coefficients = np.polyfit(x_vals, y_vals, 1)
+        linear_eq = f'y = {coefficients[0]:.3f}x + {coefficients[1]:.3f}'
+        
         plt.figure(figsize=(8, 6))
         plt.plot(x_vals, y_vals, 'ro', label='Pontos dados')
         plt.plot(x_interpolate, y_interpolate, 'b-', label='Curva interpolada')
@@ -54,11 +58,14 @@ def calcular_interpolacao():
         plt.legend()
         plt.grid(True)
         
-        # ebixe o valor interpolado no gráfico
-        plt.text(0.5, 0.02, f'Valor interpolado em xi={xi_val} é y={interpolated_value}', ha='center', va='center', transform=plt.gca().transAxes, bbox=dict(facecolor='white', alpha=0.5))
+        # exibe o valor interpolado e a equação da reta ajustada no gráfico
+        plt.text(0.5, 0.02, f'Valor interpolado em xi={xi_val} é y={interpolated_value}\n{linear_eq}', ha='center', va='center', transform=plt.gca().transAxes, bbox=dict(facecolor='white', alpha=0.5))
         
         # mostra o gráfico
         plt.show()
+        
+        # exibe a equação da reta ajustada na interface
+        label_resultado.config(text=f"Equação da reta ajustada: {linear_eq}\nValor interpolado em xi={xi_val}: {interpolated_value:.3f}")
     
     except ValueError:
         messagebox.showerror("Erro", "Por favor, insira valores válidos para x, y e xi.")
@@ -83,6 +90,10 @@ entrada_xi.pack()
 # botão para calcular a interpolação
 btn_calcular = tk.Button(root, text="Calcular Interpolação", command=calcular_interpolacao)
 btn_calcular.pack(pady=10)
+
+# label para mostrar a equação da reta ajustada e o valor interpolado
+label_resultado = tk.Label(root, text="")
+label_resultado.pack(pady=10)
 
 # roda a interface
 root.mainloop()
