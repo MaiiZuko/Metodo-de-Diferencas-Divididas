@@ -48,6 +48,14 @@ def calcular_interpolacao():
         coefficients = np.polyfit(x_vals, y_vals, 1)
         linear_eq = f'y = {coefficients[0]:.3f}x + {coefficients[1]:.3f}'
         
+        # calcula R^2
+        p = np.poly1d(coefficients)
+        y_hat = p(x_vals)
+        y_mean = np.mean(y_vals)
+        ss_tot = np.sum((y_vals - y_mean) ** 2)
+        ss_res = np.sum((y_vals - y_hat) ** 2)
+        r_squared = 1 - (ss_res / ss_tot)
+        
         plt.figure(figsize=(8, 6))
         plt.plot(x_vals, y_vals, 'ro', label='Pontos dados')
         plt.plot(x_interpolate, y_interpolate, 'b-', label='Curva interpolada')
@@ -59,13 +67,13 @@ def calcular_interpolacao():
         plt.grid(True)
         
         # exibe o valor interpolado e a equação da reta ajustada no gráfico
-        plt.text(0.5, 0.02, f'Valor interpolado em xi={xi_val} é y={interpolated_value}\n{linear_eq}', ha='center', va='center', transform=plt.gca().transAxes, bbox=dict(facecolor='white', alpha=0.5))
+        plt.text(0.5, 0.02, f'Valor interpolado em xi={xi_val} é y={interpolated_value}\n{linear_eq}\nR² = {r_squared:.3f}', ha='center', va='center', transform=plt.gca().transAxes, bbox=dict(facecolor='white', alpha=0.5))
         
         # mostra o gráfico
         plt.show()
         
         # exibe a equação da reta ajustada na interface
-        label_resultado.config(text=f"Equação da reta ajustada: {linear_eq}\nValor interpolado em xi={xi_val}: {interpolated_value:.3f}")
+        label_resultado.config(text=f"Equação da reta ajustada: {linear_eq}\nR²: {r_squared:.3f}\nValor interpolado em xi={xi_val}: {interpolated_value:.3f}")
     
     except ValueError:
         messagebox.showerror("Erro", "Por favor, insira valores válidos para x, y e xi.")
@@ -91,7 +99,7 @@ entrada_xi.pack()
 btn_calcular = tk.Button(root, text="Calcular Interpolação", command=calcular_interpolacao)
 btn_calcular.pack(pady=10)
 
-# label para mostrar a equação da reta ajustada e o valor interpolado
+# label para mostrar a equação da reta ajustada, o R² e o valor interpolado
 label_resultado = tk.Label(root, text="")
 label_resultado.pack(pady=10)
 
